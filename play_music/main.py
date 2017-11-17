@@ -84,6 +84,19 @@ class Music(object):
         out_wave = self.wave * self.volume
         stream.write(out_wave.astype(np.float32).tostring())
 
+    def change_key(self, scales, signature):
+        factor = 0
+        if signature == "#":
+            factor = 1
+        elif signature == "b":
+            factor = -1
+
+        scale_list = self._normalize_scale_argument(scales)
+        self.key_factor = self.__class__.BASE_KEY_FACTOR.copy()
+
+        for scale in scale_list:
+            self.key_factor[scale] += factor
+
     @classmethod
     def marge(cls, music1, music2, bpm=None):
         if len(music1.wave) < len(music2.wave):
@@ -103,7 +116,7 @@ class Music(object):
 def amazing_grace():
     bpm = 60
     music = Music(bpm=bpm)
-    music.key_factor["F"] += 1
+    music.change_key("F", "#")
 
     music.append_tone(["d4", "b3"])
     music.append_tone(["g4", "b3"], 2)
@@ -124,12 +137,10 @@ def canon():
     bpm = 90
 
     treble = Music(bpm=bpm)
-    treble.key_factor["C"] += 1
-    treble.key_factor["F"] += 1
+    treble.change_key(["C", "F"], "#")
 
     bass = Music(bpm=bpm)
-    bass.key_factor["A"] += 1
-    bass.key_factor["E"] += 1
+    bass.change_key(["A", "E"], "#")
 
     # treble part
     treble.append_tone(["f4", "d4"], 2)
@@ -189,9 +200,7 @@ def canon():
 def jupiter():
     bpm = 90
     music = Music(bpm=bpm)
-    music.key_factor["A"] -= 1
-    music.key_factor["B"] -= 1
-    music.key_factor["E"] -= 1
+    music.change_key(["A", "B", "E"], "b")
 
     music.append_tone("g3", .5)
     music.append_tone("b3", .5)
@@ -213,6 +222,7 @@ def jupiter():
     music.append_tone(["b3", "f3"])
 
     music.append_tone(["g3", "e3"], 2)
+    music.rest()
 
     return music
 
