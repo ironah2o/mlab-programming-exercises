@@ -32,7 +32,7 @@ class Music(object):
             int(length * (60 / self.bpm) * self.__class__.rate))
         self.wave = np.concatenate((self.wave, zero_wave))
 
-    def tone(self, scales, length=1, append=True):
+    def append_tone(self, scales, length=1, backward=False):
         waves = []
 
         scale_list = self._normalize_scale_argument(scales)
@@ -43,11 +43,11 @@ class Music(object):
             waves.append(single_wave)
 
         new_wave = np.sum(waves, axis=0)
-        if append:
-            self.wave = np.concatenate((self.wave, new_wave))
-        else:
+        if backward:
             back_length = len(new_wave)
             self.wave[-back_length:] += new_wave
+        else:
+            self.wave = np.concatenate((self.wave, new_wave))
 
     def _generate_single_wave(self, freq, length=1):
         step = (2 * math.pi) * freq / self.__class__.rate  # 2πf*(1/rate)
@@ -106,16 +106,16 @@ def amazing_grace():
     music = Music(bpm=bpm)
     music.key_factor["F"] += 1
 
-    music.tone(["d4", "b3"])
-    music.tone(["g4", "b3"], 2)
-    music.tone("b4", 0.5)
-    music.tone("g4", 0.5)
-    music.tone("d4", append=False)
-    music.tone(["b4", "d4"], 2)
-    music.tone(["a4", "c4"])
-    music.tone(["g4", "b3"], 2)
-    music.tone(["e4", "c4"])
-    music.tone(["d4", "b3"], 2)
+    music.append_tone(["d4", "b3"])
+    music.append_tone(["g4", "b3"], 2)
+    music.append_tone("b4", 0.5)
+    music.append_tone("g4", 0.5)
+    music.append_tone("d4", backward=True)
+    music.append_tone(["b4", "d4"], 2)
+    music.append_tone(["a4", "c4"])
+    music.append_tone(["g4", "b3"], 2)
+    music.append_tone(["e4", "c4"])
+    music.append_tone(["d4", "b3"], 2)
     music.rest()
 
     return music
@@ -133,53 +133,53 @@ def canon():
     bass.key_factor["E"] += 1
 
     # treble part
-    treble.tone(["f4", "d4"], 2)
-    treble.tone(["e4", "c4"], 2)
-    treble.tone(["d4", "b3"], 2)
-    treble.tone(["c4", "a3"], 2)
+    treble.append_tone(["f4", "d4"], 2)
+    treble.append_tone(["e4", "c4"], 2)
+    treble.append_tone(["d4", "b3"], 2)
+    treble.append_tone(["c4", "a3"], 2)
 
-    treble.tone(["b3", "g3"], 2)
-    treble.tone(["a3", "f3"], 2)
-    treble.tone(["b3", "g3"], 2)
-    treble.tone(["c4", "a3"], 2)
+    treble.append_tone(["b3", "g3"], 2)
+    treble.append_tone(["a3", "f3"], 2)
+    treble.append_tone(["b3", "g3"], 2)
+    treble.append_tone(["c4", "a3"], 2)
 
-    treble.tone(["d5", "f4"], 2)
-    treble.tone(["c5", "a4"], 2)
-    treble.tone(["b4", "d4"], 2)
-    treble.tone(["a4", "f4"], 2)
+    treble.append_tone(["d5", "f4"], 2)
+    treble.append_tone(["c5", "a4"], 2)
+    treble.append_tone(["b4", "d4"], 2)
+    treble.append_tone(["a4", "f4"], 2)
 
-    treble.tone(["g4", "b3"], 2)
-    treble.tone(["f4", "d4"], 2)
-    treble.tone(["g4", "b3"], 2)
-    treble.tone(["a4", "c4"], 2)
+    treble.append_tone(["g4", "b3"], 2)
+    treble.append_tone(["f4", "d4"], 2)
+    treble.append_tone(["g4", "b3"], 2)
+    treble.append_tone(["a4", "c4"], 2)
 
     # bass part
-    bass.tone("d3", 2)
-    bass.tone("a2", 2)
-    bass.tone("b2", 2)
-    bass.tone("f3", 2)
-    bass.tone("g3", 2)
-    bass.tone("d3", 2)
-    bass.tone("g3", 2)
-    bass.tone("f3", 2)
+    bass.append_tone("d3", 2)
+    bass.append_tone("a2", 2)
+    bass.append_tone("b2", 2)
+    bass.append_tone("f3", 2)
+    bass.append_tone("g3", 2)
+    bass.append_tone("d3", 2)
+    bass.append_tone("g3", 2)
+    bass.append_tone("f3", 2)
 
-    bass.tone("d3")
-    bass.tone("f3")
-    bass.tone("a3")
-    bass.tone("g3")
-    bass.tone("f3")
-    bass.tone("d3")
-    bass.tone("f3")
-    bass.tone("e3")
+    bass.append_tone("d3")
+    bass.append_tone("f3")
+    bass.append_tone("a3")
+    bass.append_tone("g3")
+    bass.append_tone("f3")
+    bass.append_tone("d3")
+    bass.append_tone("f3")
+    bass.append_tone("e3")
 
-    bass.tone("d3")
-    bass.tone("b2")
-    bass.tone("d3")
-    bass.tone("a2")
-    bass.tone("g2")
-    bass.tone("b2")
-    bass.tone("c3")
-    bass.tone("a2")
+    bass.append_tone("d3")
+    bass.append_tone("b2")
+    bass.append_tone("d3")
+    bass.append_tone("a2")
+    bass.append_tone("g2")
+    bass.append_tone("b2")
+    bass.append_tone("c3")
+    bass.append_tone("a2")
     bass.rest()
 
     mixed = Music.marge(treble, bass)
@@ -194,26 +194,26 @@ def jupiter():
     music.key_factor["B"] -= 1
     music.key_factor["E"] -= 1
 
-    music.tone("g3", .5)
-    music.tone("b3", .5)
+    music.append_tone("g3", .5)
+    music.append_tone("b3", .5)
 
-    music.tone(["c4", "a3"])
-    music.tone("c4", .5)
-    music.tone("e4", .5)
-    music.tone(["d4", "a3"], .75)
-    music.tone("b3", .25)
+    music.append_tone(["c4", "a3"])
+    music.append_tone("c4", .5)
+    music.append_tone("e4", .5)
+    music.append_tone(["d4", "a3"], .75)
+    music.append_tone("b3", .25)
 
-    music.tone(["e4", "b3"], .5)
-    music.tone("f4", .5)
-    music.tone("e4")
-    music.tone(["d4", "b3"])
+    music.append_tone(["e4", "b3"], .5)
+    music.append_tone("f4", .5)
+    music.append_tone("e4")
+    music.append_tone(["d4", "b3"])
 
-    music.tone(["c4", "a3"], .5)
-    music.tone("d4", .5)
-    music.tone("c4")
-    music.tone(["b3", "f3"])
+    music.append_tone(["c4", "a3"], .5)
+    music.append_tone("d4", .5)
+    music.append_tone("c4")
+    music.append_tone(["b3", "f3"])
 
-    music.tone(["g3", "e3"], 2)
+    music.append_tone(["g3", "e3"], 2)
 
     return music
 
