@@ -7,9 +7,9 @@ import numpy as np
 import pyaudio
 
 
-class Music(object):
+class MusicPart(object):
 
-    rate = 44100
+    RATE = 44100
     BASE_KEY_FACTOR = {
         "C": -9,
         "D": -7,
@@ -28,7 +28,7 @@ class Music(object):
 
     def rest(self, length=1):
         zero_wave = np.zeros(
-            int(length * (60 / self.bpm) * self.__class__.rate))
+            int(length * (60 / self.bpm) * self.__class__.RATE))
         self.wave = np.concatenate((self.wave, zero_wave))
 
     def append_tone(self, scales, length=1, backward=False):
@@ -41,7 +41,7 @@ class Music(object):
             single_wave = self._generate_single_wave(freq, length)
             waves.append(single_wave)
 
-        new_wave = np.sum(waves, axis=0)
+        new_wave = np.sum(waves, axis=0) * self.volume
         if backward:
             back_length = len(new_wave)
             self.wave[-back_length:] += new_wave
@@ -49,9 +49,9 @@ class Music(object):
             self.wave = np.concatenate((self.wave, new_wave))
 
     def _generate_single_wave(self, freq, length=1):
-        step = (2 * math.pi) * freq / self.__class__.rate  # 2πf*(1/rate)
+        step = (2 * math.pi) * freq / self.__class__.RATE  # 2πf*(1/rate)
         single_wave = np.sin(step * np.arange(
-            int(length * (60 / self.bpm) * self.__class__.rate)))  # sin(2πft)
+            int(length * (60 / self.bpm) * self.__class__.RATE)))  # sin(2πft)
         return single_wave
 
     def _normalize_scale_argument(self, scale):
@@ -80,8 +80,8 @@ class Music(object):
     def play(self):
         pa = pyaudio.PyAudio()
         stream = pa.open(format=pyaudio.paFloat32, channels=1,
-                         rate=self.__class__.rate, output=True)
-        out_wave = self.wave * self.volume
+                         rate=self.__class__.RATE, output=True)
+        out_wave = self.wave
         stream.write(out_wave.astype(np.float32).tostring())
 
     def change_key(self, scales, signature):
@@ -97,25 +97,45 @@ class Music(object):
         for scale in scale_list:
             self.key_factor[scale] += factor
 
-    @classmethod
-    def marge(cls, music1, music2, bpm=None):
-        if len(music1.wave) < len(music2.wave):
-            long_wave = music2.wave.copy()
-            short_wave = music1.wave
-        else:
-            long_wave = music1.wave.copy()
-            short_wave = music2.wave
-        long_wave[:len(short_wave)] += short_wave
 
-        new_bpm = bpm or music1.bpm
-        music = Music(bpm=new_bpm)
-        music.wave = long_wave
-        return music
+class Music(object):
+
+    def __init__(self, main_volume=1):
+        self.parts = []
+        self.main_volume = main_volume
+
+    def add_part(self, part):
+        self.parts.append(part)
+
+    def _marged_wave(self):
+        wave = np.empty(1)
+        for part in self.parts:
+            wave = self._marge(wave, part.wave)
+        return wave
+
+    def _marge(self, wave1, wave2):
+        if len(wave1) < len(wave2):
+            long_wave = wave2.copy()
+            short_wave = wave1
+        else:
+            long_wave = wave1.copy()
+            short_wave = wave2
+        long_wave[:len(short_wave)] += short_wave
+        return long_wave
+
+    def play(self):
+        out_wave = self._marged_wave() * self.main_volume
+
+        pa = pyaudio.PyAudio()
+        stream = pa.open(format=pyaudio.paFloat32, channels=1,
+                         rate=MusicPart.RATE, output=True)
+        stream.write(out_wave.astype(np.float32).tostring())
 
 
 def amazing_grace():
     bpm = 60
-    music = Music(bpm=bpm)
+
+    music = MusicPart(bpm=bpm)
     music.change_key("F", "#")
 
     music.append_tone(["d4", "b3"])
@@ -136,10 +156,10 @@ def amazing_grace():
 def canon():
     bpm = 90
 
-    treble = Music(bpm=bpm)
+    treble = MusicPart(bpm=bpm)
     treble.change_key(["C", "F"], "#")
 
-    bass = Music(bpm=bpm)
+    bass = MusicPart(bpm=bpm)
     bass.change_key(["A", "E"], "#")
 
     # treble part
@@ -192,14 +212,17 @@ def canon():
     bass.append_tone("a2")
     bass.rest()
 
-    mixed = Music.marge(treble, bass)
+    music = Music()
+    music.add_part(treble)
+    music.add_part(bass)
 
-    return mixed
+    return music
 
 
 def jupiter():
     bpm = 90
-    music = Music(bpm=bpm)
+
+    music = MusicPart(bpm=bpm)
     music.change_key(["A", "B", "E"], "b")
 
     music.append_tone("g3", .5)
