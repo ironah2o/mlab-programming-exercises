@@ -22,14 +22,17 @@ class MusicPart(object):
 
     def __init__(self, bpm=60, volume=0.1):
         self.bpm = bpm
-        self.wave = np.empty(0)
+        self._wave = np.empty(0)
         self.key_factor = self.__class__.BASE_KEY_FACTOR.copy()
         self.volume = volume
+
+    def get_wave(self):
+        return self._wave() * self.volume
 
     def rest(self, length=1):
         zero_wave = np.zeros(
             int(length * (60 / self.bpm) * self.__class__.RATE))
-        self.wave = np.concatenate((self.wave, zero_wave))
+        self._wave = np.concatenate((self._wave, zero_wave))
 
     def append_tone(self, scales, length=1, backward=False):
         waves = []
@@ -41,12 +44,12 @@ class MusicPart(object):
             single_wave = self._generate_single_wave(freq, length)
             waves.append(single_wave)
 
-        new_wave = np.sum(waves, axis=0) * self.volume
+        new_wave = np.sum(waves, axis=0)
         if backward:
             back_length = len(new_wave)
-            self.wave[-back_length:] += new_wave
+            self._wave[-back_length:] += new_wave
         else:
-            self.wave = np.concatenate((self.wave, new_wave))
+            self._wave = np.concatenate((self._wave, new_wave))
 
     def _generate_single_wave(self, freq, length=1):
         step = (2 * math.pi) * freq / self.__class__.RATE  # 2πf*(1/rate)
@@ -81,7 +84,7 @@ class MusicPart(object):
         pa = pyaudio.PyAudio()
         stream = pa.open(format=pyaudio.paFloat32, channels=1,
                          rate=self.__class__.RATE, output=True)
-        out_wave = self.wave
+        out_wave = self._wave
         stream.write(out_wave.astype(np.float32).tostring())
 
     def change_key(self, scales, signature):
@@ -110,7 +113,7 @@ class Music(object):
     def _marged_wave(self):
         wave = np.empty(1)
         for part in self.parts:
-            wave = self._marge(wave, part.wave)
+            wave = self._marge(wave, part.get_wave())
         return wave
 
     def _marge(self, wave1, wave2):
