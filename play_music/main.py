@@ -94,7 +94,7 @@ class MusicPart(object):
         waves = []
 
         scale_list = self._normalize_scale_argument(scales)
-        for scale in scale_list: # 音階ごとのsin波を順にwavesに追加する
+        for scale in scale_list:  # 音階ごとのsin波を順にwavesに追加する
             freq = self._freq_from_scale(scale)
             single_wave = self._generate_single_wave(freq, length)
             waves.append(single_wave)
@@ -187,22 +187,22 @@ def amazing_grace():
 
     bpm = 60
 
-    music = MusicPart(bpm=bpm)
-    music.change_key('F', '#')
+    part = MusicPart(bpm=bpm)
+    part.change_key('F', '#')
 
-    music.append_tone(['d4', 'b3'])
-    music.append_tone(['g4', 'b3'], 2)
-    music.append_tone('b4', 0.5)
-    music.append_tone('g4', 0.5)
-    music.append_tone('d4', backward=True)
-    music.append_tone(['b4', 'd4'], 2)
-    music.append_tone(['a4', 'c4'])
-    music.append_tone(['g4', 'b3'], 2)
-    music.append_tone(['e4', 'c4'])
-    music.append_tone(['d4', 'b3'], 2)
-    music.rest()
+    part.append_tone(['d4', 'b3'])
+    part.append_tone(['g4', 'b3'], 2)
+    part.append_tone('b4', 0.5)
+    part.append_tone('g4', 0.5)
+    part.append_tone('d4', backward=True)
+    part.append_tone(['b4', 'd4'], 2)
+    part.append_tone(['a4', 'c4'])
+    part.append_tone(['g4', 'b3'], 2)
+    part.append_tone(['e4', 'c4'])
+    part.append_tone(['d4', 'b3'], 2)
+    part.rest()
 
-    return music
+    return part
 
 
 def canon():
@@ -210,65 +210,65 @@ def canon():
 
     bpm = 90
 
-    treble = MusicPart(bpm=bpm)
-    treble.change_key(['C', 'F'], '#')
+    treble_part = MusicPart(bpm=bpm)
+    treble_part.change_key(['C', 'F'], '#')
 
-    bass = MusicPart(bpm=bpm)
-    bass.change_key(['A', 'E'], '#')
+    bass_part = MusicPart(bpm=bpm)
+    bass_part.change_key(['A', 'E'], '#')
 
     # treble part
-    treble.append_tone(['f4', 'd4'], 2)
-    treble.append_tone(['e4', 'c4'], 2)
-    treble.append_tone(['d4', 'b3'], 2)
-    treble.append_tone(['c4', 'a3'], 2)
+    treble_part.append_tone(['f4', 'd4'], 2)
+    treble_part.append_tone(['e4', 'c4'], 2)
+    treble_part.append_tone(['d4', 'b3'], 2)
+    treble_part.append_tone(['c4', 'a3'], 2)
 
-    treble.append_tone(['b3', 'g3'], 2)
-    treble.append_tone(['a3', 'f3'], 2)
-    treble.append_tone(['b3', 'g3'], 2)
-    treble.append_tone(['c4', 'a3'], 2)
+    treble_part.append_tone(['b3', 'g3'], 2)
+    treble_part.append_tone(['a3', 'f3'], 2)
+    treble_part.append_tone(['b3', 'g3'], 2)
+    treble_part.append_tone(['c4', 'a3'], 2)
 
-    treble.append_tone(['d5', 'f4'], 2)
-    treble.append_tone(['c5', 'a4'], 2)
-    treble.append_tone(['b4', 'd4'], 2)
-    treble.append_tone(['a4', 'f4'], 2)
+    treble_part.append_tone(['d5', 'f4'], 2)
+    treble_part.append_tone(['c5', 'a4'], 2)
+    treble_part.append_tone(['b4', 'd4'], 2)
+    treble_part.append_tone(['a4', 'f4'], 2)
 
-    treble.append_tone(['g4', 'b3'], 2)
-    treble.append_tone(['f4', 'd4'], 2)
-    treble.append_tone(['g4', 'b3'], 2)
-    treble.append_tone(['a4', 'c4'], 2)
+    treble_part.append_tone(['g4', 'b3'], 2)
+    treble_part.append_tone(['f4', 'd4'], 2)
+    treble_part.append_tone(['g4', 'b3'], 2)
+    treble_part.append_tone(['a4', 'c4'], 2)
 
     # bass part
-    bass.append_tone('d3', 2)
-    bass.append_tone('a2', 2)
-    bass.append_tone('b2', 2)
-    bass.append_tone('f3', 2)
-    bass.append_tone('g3', 2)
-    bass.append_tone('d3', 2)
-    bass.append_tone('g3', 2)
-    bass.append_tone('f3', 2)
+    bass_part.append_tone('d3', 2)
+    bass_part.append_tone('a2', 2)
+    bass_part.append_tone('b2', 2)
+    bass_part.append_tone('f3', 2)
+    bass_part.append_tone('g3', 2)
+    bass_part.append_tone('d3', 2)
+    bass_part.append_tone('g3', 2)
+    bass_part.append_tone('f3', 2)
 
-    bass.append_tone('d3')
-    bass.append_tone('f3')
-    bass.append_tone('a3')
-    bass.append_tone('g3')
-    bass.append_tone('f3')
-    bass.append_tone('d3')
-    bass.append_tone('f3')
-    bass.append_tone('e3')
+    bass_part.append_tone('d3')
+    bass_part.append_tone('f3')
+    bass_part.append_tone('a3')
+    bass_part.append_tone('g3')
+    bass_part.append_tone('f3')
+    bass_part.append_tone('d3')
+    bass_part.append_tone('f3')
+    bass_part.append_tone('e3')
 
-    bass.append_tone('d3')
-    bass.append_tone('b2')
-    bass.append_tone('d3')
-    bass.append_tone('a2')
-    bass.append_tone('g2')
-    bass.append_tone('b2')
-    bass.append_tone('c3')
-    bass.append_tone('a2')
-    bass.rest()
+    bass_part.append_tone('d3')
+    bass_part.append_tone('b2')
+    bass_part.append_tone('d3')
+    bass_part.append_tone('a2')
+    bass_part.append_tone('g2')
+    bass_part.append_tone('b2')
+    bass_part.append_tone('c3')
+    bass_part.append_tone('a2')
+    bass_part.rest()
 
     music = Music()
-    music.add_part(treble)
-    music.add_part(bass)
+    music.add_part(treble_part)
+    music.add_part(bass_part)
 
     return music
 
@@ -278,32 +278,32 @@ def jupiter():
 
     bpm = 90
 
-    music = MusicPart(bpm=bpm)
-    music.change_key(['A', 'B', 'E'], 'b')
+    part = MusicPart(bpm=bpm)
+    part.change_key(['A', 'B', 'E'], 'b')
 
-    music.append_tone('g3', .5)
-    music.append_tone('b3', .5)
+    part.append_tone('g3', .5)
+    part.append_tone('b3', .5)
 
-    music.append_tone(['c4', 'a3'])
-    music.append_tone('c4', .5)
-    music.append_tone('e4', .5)
-    music.append_tone(['d4', 'a3'], .75)
-    music.append_tone('b3', .25)
+    part.append_tone(['c4', 'a3'])
+    part.append_tone('c4', .5)
+    part.append_tone('e4', .5)
+    part.append_tone(['d4', 'a3'], .75)
+    part.append_tone('b3', .25)
 
-    music.append_tone(['e4', 'b3'], .5)
-    music.append_tone('f4', .5)
-    music.append_tone('e4')
-    music.append_tone(['d4', 'b3'])
+    part.append_tone(['e4', 'b3'], .5)
+    part.append_tone('f4', .5)
+    part.append_tone('e4')
+    part.append_tone(['d4', 'b3'])
 
-    music.append_tone(['c4', 'a3'], .5)
-    music.append_tone('d4', .5)
-    music.append_tone('c4')
-    music.append_tone(['b3', 'f3'])
+    part.append_tone(['c4', 'a3'], .5)
+    part.append_tone('d4', .5)
+    part.append_tone('c4')
+    part.append_tone(['b3', 'f3'])
 
-    music.append_tone(['g3', 'e3'], 2)
-    music.rest()
+    part.append_tone(['g3', 'e3'], 2)
+    part.rest()
 
-    return music
+    return part
 
 
 def main():
