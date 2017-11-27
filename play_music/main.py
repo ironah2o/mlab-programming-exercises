@@ -88,7 +88,7 @@ class MusicPart(object):
         ドとミbの音を鳴らす場合 ["c4","Eb4"]
         length: 音の長さ．4分音符が1
         backward=Falseの時，前の音符に続いて音符を鳴らす
-        backward=Tryeの時，length分前から，前の音符にかぶせて音符をならす
+        backward=Trueの時，length分前から，前の音符にかぶせて音符をならす
         """
 
         waves = []
@@ -134,7 +134,7 @@ class MusicPart(object):
 
     # getter
     def get_wave(self):
-        return self._wave() * self.volume
+        return self._wave * self.volume
 
 
 class Music(object):
