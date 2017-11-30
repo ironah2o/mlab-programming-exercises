@@ -290,8 +290,12 @@ def amazing_grace(bpm=120):
 def canon(bpm=90):
     """パッヘルベルのカノンのMusicインスタンスを作成する関数"""
 
-    treble_part = Series(key_conf=KeyConfig(['C', 'F'], '#'))
-    bass_part = Series(key_conf=KeyConfig(['A', 'E'], '#'))
+    treble_part = Series()
+    bass_part = Series()
+
+    score = Chord(key_conf=KeyConfig(['C', 'F'], '#'))
+    score.add(treble_part)
+    score.add(bass_part)
 
     # treble part
     treble_part.add_tone(['f4', 'd4'], 2)
@@ -342,10 +346,6 @@ def canon(bpm=90):
     bass_part.add_tone('c3')
     bass_part.add_tone('a2')
     bass_part.add_rest()
-
-    score = Chord()
-    score.add(treble_part)
-    score.add(bass_part)
 
     music = Music(score, bpm=bpm)
 
