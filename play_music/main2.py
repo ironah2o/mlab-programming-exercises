@@ -10,7 +10,7 @@ import pyaudio
 
 
 def merge_waves(waves):
-    """長さの異なる2つのndarrayを合成する"""
+    """長さの異なる複数のndarrayを合成する"""
 
     def merge_2wave(wave1, wave2):
         if len(wave1) > len(wave2):
@@ -215,6 +215,7 @@ class Chord(MusicComponent):
 
 
 class Series(MusicComponent):
+    """MusicComponentクラスのインスタンスを五線譜上で時間方向に結合するクラス"""
 
     def __init__(self, components=None, key_conf=None):
         super().__init__()
@@ -241,6 +242,12 @@ class Series(MusicComponent):
 
 
 class Music(object):
+    """MusicComponentの波形を生成 & 鳴らすためのクラス
+
+    component : MusicComponentインスタンス
+    bpm : 一分間に４分音符が何回あるか
+    rate : 波形のサンプルレート
+    """
 
     def __init__(self, component, bpm=90, rate=44100):
         self.bpm = bpm
@@ -257,16 +264,27 @@ class Music(object):
 
 
 def tone(scales, length=1):
+    """和音を表現するMusicComponentを簡単に作るためのラッパー関数
+
+    scale: 音符を表す文字列，またはそのリスト．音階の大文字小文字は区別しない
+        例: ドの音を鳴らす場合 "c4"
+        高いド#の音を鳴らす場合 "C#5"
+        ドとミbの音を鳴らす場合 ["c4","Eb4"]
+    length: 音の長さ．4分音符が1
+    """
     scale_list = normalize_scale_argument(scales)
     chord = Chord([Note(scale, length) for scale in scale_list])
     return chord
 
 
 def rest(length=1):
+    """休符のMusicComponentを作るラッパー関数"""
     return Rest(length)
 
 
 def amazing_grace(bpm=120):
+    """Amazing GraceのMusicインスタンスを作成する関数"""
+
     part = Series(
         components=[
             tone(['d4', 'b3']),
@@ -353,6 +371,8 @@ def canon(bpm=90):
 
 
 def jupiter(bpm=80):
+    """jupiterのMusicインスタンスを作成する関数"""
+
     part = Series(key_conf=KeyConfig(['A', 'B', 'E'], 'b'))
     part.add_tone('g3', .5)
     part.add_tone('b3', .5)
