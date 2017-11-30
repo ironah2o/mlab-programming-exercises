@@ -9,17 +9,21 @@ import numpy as np
 import pyaudio
 
 
-def merge_wave(wave1, wave2):
+def merge_waves(waves):
     """長さの異なる2つのndarrayを合成する"""
 
-    if len(wave1) > len(wave2):
-        long_wave, short_wave = wave1, wave2
-    else:
-        long_wave, short_wave = wave2, wave1
+    def merge_2wave(wave1, wave2):
+        if len(wave1) > len(wave2):
+            long_wave, short_wave = wave1, wave2
+        else:
+            long_wave, short_wave = wave2, wave1
 
-    new_wave = long_wave.copy()
-    new_wave[:len(short_wave)] += short_wave
-    return new_wave
+        new_wave = long_wave.copy()
+        new_wave[:len(short_wave)] += short_wave
+        return new_wave
+
+    wave = functools.reduce(merge_2wave, waves)
+    return wave
 
 
 def normalize_scale_argument(scales):
@@ -206,7 +210,7 @@ class Chord(MusicComponent):
     def generate_wave(self, bpm, rate, base_key_conf=None):
         key_conf = KeyConfig.merge(self.key_conf, base_key_conf)
         waves = [c.generate_wave(bpm, rate, key_conf) for c in self.components]
-        wave = functools.reduce(merge_wave, waves)
+        wave = merge_waves(waves)
         return wave
 
 
