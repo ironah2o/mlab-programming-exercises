@@ -187,6 +187,8 @@ class Note(MusicComponent):
             factor += 1
         elif accidental == 'b':
             factor -= 1
+        elif accidental == 'n':
+            factor = KeyConfig().factor_for_key(key.upper())
 
         freq = 440 * (2**((octave - 4) + factor / 12))
         return freq
